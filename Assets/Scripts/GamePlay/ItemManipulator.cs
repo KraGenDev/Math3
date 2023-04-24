@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using AppsFlyerSDK;
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.UI;
 
 public class ItemManipulator : MonoBehaviour
 {
@@ -16,8 +14,8 @@ public class ItemManipulator : MonoBehaviour
     private int _sizeHorizontal;
     private int _sizeVertical;
 
-    private Item firstItem;
-    private Item secondItem;
+    private Item _firstItem;
+    private Item _secondItem;
 
     public static event Action MatchThree;
     private void Start()
@@ -29,7 +27,6 @@ public class ItemManipulator : MonoBehaviour
         Invoke(nameof(CheckTheeInLine),startDelay);
     }
 
-    [ContextMenu("Check")]
     private void CheckTheeInLine()
     {
         for (int row = 0; row < _sizeVertical; row++)
@@ -76,14 +73,14 @@ public class ItemManipulator : MonoBehaviour
     }
     public void TakeButtonInfo(Item item)
     {
-        if (firstItem == null)
+        if (_firstItem == null)
         {
-            firstItem = item;
+            _firstItem = item;
         }
         else
         {
-            secondItem = item;
-            ReplaceItems(firstItem.ID,secondItem.ID);
+            _secondItem = item;
+            ReplaceItems(_firstItem.ID,_secondItem.ID);
         }
     }
     
@@ -96,8 +93,8 @@ public class ItemManipulator : MonoBehaviour
         
         if (Mathf.Abs(rowA - rowB) + Mathf.Abs(colA - colB) != 1)
         {
-            firstItem = null;
-            secondItem = null;
+            _firstItem = null;
+            _secondItem = null;
             return;
         }
         
@@ -113,14 +110,12 @@ public class ItemManipulator : MonoBehaviour
         var itemAID = _items[idFirstItem].GetComponent<Item>().ID;
         _items[idFirstItem].GetComponent<Item>().ID = _items[idSecondItem].GetComponent<Item>().ID;
         _items[idSecondItem].GetComponent<Item>().ID = itemAID;
-        
-        //_items[idFirstItem].transform.localPosition = Vector3.zero;
-        //_items[idSecondItem].transform.localPosition = Vector3.zero;
+       
         _items[idFirstItem].transform.DOLocalMove(Vector3.zero, _speedItemSwap);
         _items[idSecondItem].transform.DOLocalMove(Vector3.zero, _speedItemSwap);
         
-        firstItem = null;
-        secondItem = null;
+        _firstItem = null;
+        _secondItem = null;
 
         CheckTheeInLine();
     }
