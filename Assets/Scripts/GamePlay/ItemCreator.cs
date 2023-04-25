@@ -7,8 +7,13 @@ public class ItemCreator : MonoBehaviour
     [SerializeField] private SlotCreator _slotCreator;
     [SerializeField] private GameObject[] _itemPrefabs;
 
-    public List<GameObject> _createdItems;
+    [HideInInspector] public List<GameObject> _createdItems;
     private void Start()
+    {
+        FillCreatedSlots();
+    }
+
+    private void FillCreatedSlots()
     {
         var slots = _slotCreator.Slots;
         var size = _slotCreator.Slots.Count;
@@ -23,7 +28,6 @@ public class ItemCreator : MonoBehaviour
             _createdItems.Add(item);
         }
     }
-
     public void CreateItemAt(int id)
     {
         var slots = _slotCreator.Slots;

@@ -34,13 +34,13 @@ public class ItemManipulator : MonoBehaviour
             int startIdx = row * _sizeHorizontal;
             for (int col = 0; col <= _sizeHorizontal - 3; col++)
             {
-                var targetValue = _items[startIdx + col].GetComponent<Item>().UnicalNumber;
-                if (_items[startIdx + col + 1].GetComponent<Item>().UnicalNumber == targetValue &&
-                    _items[startIdx + col + 2].GetComponent<Item>().UnicalNumber == targetValue)
+                var targetValue = _items[startIdx + col].GetComponent<Item>().GetUniqueNumber;
+                if (_items[startIdx + col + 1].GetComponent<Item>().GetUniqueNumber == targetValue &&
+                    _items[startIdx + col + 2].GetComponent<Item>().GetUniqueNumber == targetValue)
                 {
-                    DestroyAndCreateItem(startIdx + col);
-                    DestroyAndCreateItem(startIdx + col + 1);
-                    DestroyAndCreateItem(startIdx + col + 2);
+                    RaplaceItem(startIdx + col);
+                    RaplaceItem(startIdx + col + 1);
+                    RaplaceItem(startIdx + col + 2);
                     MatchThree?.Invoke();
                     CheckTheeInLine();
                 }
@@ -49,16 +49,16 @@ public class ItemManipulator : MonoBehaviour
         
         for (int col = 0; col < _sizeHorizontal; col++)
         {
-            int startIdx = col;
+            var startIdx = col;
             for (int row = 0; row <= _sizeVertical - 3; row++)
             {
-                var targetValue = _items[startIdx + row * _sizeHorizontal].GetComponent<Item>().UnicalNumber;
-                if (_items[startIdx + (row + 1) * _sizeHorizontal].GetComponent<Item>().UnicalNumber == targetValue &&
-                    _items[startIdx + (row + 2) * _sizeHorizontal].GetComponent<Item>().UnicalNumber == targetValue)
+                var targetValue = _items[startIdx + row * _sizeHorizontal].GetComponent<Item>().GetUniqueNumber;
+                if (_items[startIdx + (row + 1) * _sizeHorizontal].GetComponent<Item>().GetUniqueNumber == targetValue &&
+                    _items[startIdx + (row + 2) * _sizeHorizontal].GetComponent<Item>().GetUniqueNumber == targetValue)
                 {
-                    DestroyAndCreateItem(startIdx + row * _sizeHorizontal);
-                    DestroyAndCreateItem(startIdx + (row + 1) * _sizeHorizontal);
-                    DestroyAndCreateItem(startIdx + (row + 2) * _sizeHorizontal);
+                    RaplaceItem(startIdx + row * _sizeHorizontal);
+                    RaplaceItem(startIdx + (row + 1) * _sizeHorizontal);
+                    RaplaceItem(startIdx + (row + 2) * _sizeHorizontal);
                     CheckTheeInLine();
                     MatchThree?.Invoke();
                 }
@@ -66,7 +66,7 @@ public class ItemManipulator : MonoBehaviour
         }
     }
 
-    private void DestroyAndCreateItem(int id)
+    private void RaplaceItem(int id)
     {
         Destroy(_items[id]);
         _itemCreator.CreateItemAt(id);
@@ -80,11 +80,11 @@ public class ItemManipulator : MonoBehaviour
         else
         {
             _secondItem = item;
-            ReplaceItems(_firstItem.ID,_secondItem.ID);
+            SwapItems(_firstItem.ID,_secondItem.ID);
         }
     }
     
-    private void ReplaceItems(int idFirstItem, int idSecondItem)
+    private void SwapItems(int idFirstItem, int idSecondItem)
     {
         var rowA = idFirstItem / _sizeVertical;
         var colA = idFirstItem % _sizeVertical;
@@ -99,17 +99,17 @@ public class ItemManipulator : MonoBehaviour
         }
         
         
-        var parentItemA = _items[idFirstItem].transform.parent;
+        var firstItemParent = _items[idFirstItem].transform.parent;
         _items[idFirstItem].transform.parent = _items[idSecondItem].transform.parent;
-        _items[idSecondItem].transform.parent = parentItemA;
+        _items[idSecondItem].transform.parent = firstItemParent;
 
-        var itemA = _items[idFirstItem];
+        var firstItem = _items[idFirstItem];
         _items[idFirstItem] = _items[idSecondItem];
-        _items[idSecondItem] = itemA;
+        _items[idSecondItem] = firstItem;
 
-        var itemAID = _items[idFirstItem].GetComponent<Item>().ID;
+        var firstItemID = _items[idFirstItem].GetComponent<Item>().ID;
         _items[idFirstItem].GetComponent<Item>().ID = _items[idSecondItem].GetComponent<Item>().ID;
-        _items[idSecondItem].GetComponent<Item>().ID = itemAID;
+        _items[idSecondItem].GetComponent<Item>().ID = firstItemID;
        
         _items[idFirstItem].transform.DOLocalMove(Vector3.zero, _speedItemSwap);
         _items[idSecondItem].transform.DOLocalMove(Vector3.zero, _speedItemSwap);

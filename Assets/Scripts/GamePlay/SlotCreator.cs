@@ -16,6 +16,11 @@ public class SlotCreator : MonoBehaviour
 
     private void Awake()
     {
+        CreateSlots();
+    }
+
+    private void CreateSlots()
+    {
         var totalSize = _spaceSizeHorizontal * _spaceSizeVertical;
         for (var i = 0; i < totalSize; i++)
         {
