@@ -8,6 +8,8 @@ public class ItemCreator : MonoBehaviour
     [SerializeField] private GameObject[] _itemPrefabs;
 
     [HideInInspector] public List<GameObject> _createdItems;
+    
+    
     private void Start()
     {
         FillCreatedSlots();

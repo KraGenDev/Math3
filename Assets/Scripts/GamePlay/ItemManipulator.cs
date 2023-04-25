@@ -18,17 +18,21 @@ public class ItemManipulator : MonoBehaviour
     private Item _secondItem;
 
     public static event Action MatchThree;
+    
+    
     private void Start()
     {
-        var startDelay = 0.1f;
         _sizeHorizontal = _slotCreator.SpaceSizeHorizontal;
         _sizeVertical = _slotCreator.SpaceSizeVertical;
         _items = _itemCreator._createdItems;
+        
+        var startDelay = 0.1f;
         Invoke(nameof(CheckTheeInLine),startDelay);
     }
 
     private void CheckTheeInLine()
     {
+        //Check rows
         for (int row = 0; row < _sizeVertical; row++)
         {
             int startIdx = row * _sizeHorizontal;
@@ -38,15 +42,16 @@ public class ItemManipulator : MonoBehaviour
                 if (_items[startIdx + col + 1].GetComponent<Item>().GetUniqueNumber == targetValue &&
                     _items[startIdx + col + 2].GetComponent<Item>().GetUniqueNumber == targetValue)
                 {
-                    RaplaceItem(startIdx + col);
-                    RaplaceItem(startIdx + col + 1);
-                    RaplaceItem(startIdx + col + 2);
+                    ReplaceItem(startIdx + col);
+                    ReplaceItem(startIdx + col + 1);
+                    ReplaceItem(startIdx + col + 2);
                     MatchThree?.Invoke();
                     CheckTheeInLine();
                 }
             }
         }
         
+        // Check columns
         for (int col = 0; col < _sizeHorizontal; col++)
         {
             var startIdx = col;
@@ -56,9 +61,9 @@ public class ItemManipulator : MonoBehaviour
                 if (_items[startIdx + (row + 1) * _sizeHorizontal].GetComponent<Item>().GetUniqueNumber == targetValue &&
                     _items[startIdx + (row + 2) * _sizeHorizontal].GetComponent<Item>().GetUniqueNumber == targetValue)
                 {
-                    RaplaceItem(startIdx + row * _sizeHorizontal);
-                    RaplaceItem(startIdx + (row + 1) * _sizeHorizontal);
-                    RaplaceItem(startIdx + (row + 2) * _sizeHorizontal);
+                    ReplaceItem(startIdx + row * _sizeHorizontal);
+                    ReplaceItem(startIdx + (row + 1) * _sizeHorizontal);
+                    ReplaceItem(startIdx + (row + 2) * _sizeHorizontal);
                     CheckTheeInLine();
                     MatchThree?.Invoke();
                 }
@@ -66,11 +71,12 @@ public class ItemManipulator : MonoBehaviour
         }
     }
 
-    private void RaplaceItem(int id)
+    private void ReplaceItem(int id)
     {
         Destroy(_items[id]);
         _itemCreator.CreateItemAt(id);
     }
+    
     public void TakeButtonInfo(Item item)
     {
         if (_firstItem == null)
@@ -119,5 +125,4 @@ public class ItemManipulator : MonoBehaviour
 
         CheckTheeInLine();
     }
-
 }
